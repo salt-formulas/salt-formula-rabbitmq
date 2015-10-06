@@ -1,0 +1,20 @@
+applications:
+- rabbitmq
+parameters:
+  _param:
+    rabbitmq_admin_user: admin
+  rabbitmq:
+    server:
+      enabled: true
+      secret_key: ${_param:rabbitmq_secret_key}
+      memory:
+        vm_high_watermark: 0.8
+      bind:
+        address: 127.0.0.1
+        port: 5672
+      plugins:
+      - amqp_client
+      - rabbitmq_management
+      admin:
+        name: ${_param:rabbitmq_admin_user}
+        password: ${_param:rabbitmq_admin_password}

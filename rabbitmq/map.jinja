@@ -1,0 +1,39 @@
+
+{% set server = salt['grains.filter_by']({
+    'Arch': {
+        'pkgs': ['rabbitmq'],
+        'service': 'rabbitmq',
+        'config_file': '/etc/rabbitmq/rabbitmq.config',
+        'cookie_file': '/var/lib/rabbitmq/.erlang.cookie',
+        'ulimit': 8192,
+        'bind': {
+            'address': '0.0.0.0',
+            'port': '5672'
+        },
+    },
+    'Debian': {
+        'pkgs': ['rabbitmq-server'],
+        'service': 'rabbitmq-server',
+        'config_file': '/etc/rabbitmq/rabbitmq.config',
+        'cookie_file': '/var/lib/rabbitmq/.erlang.cookie',
+        'default_file': '/etc/default/rabbitmq-server',
+        'ulimit': 8192,
+        'bind': {
+            'address': '0.0.0.0',
+            'port': '5672'
+        },
+    },
+    'RedHat': {
+        'pkgs': ['rabbitmq-server'],
+        'service': 'rabbitmq-server',
+        'config_file': '/etc/rabbitmq/rabbitmq.config',
+        'cookie_file': '/var/lib/rabbitmq/.erlang.cookie',
+        'ulimit': 8192,
+        'bind': {
+            'address': '0.0.0.0',
+            'port': '5672'
+        },
+    },
+}, merge=salt['pillar.get']('rabbitmq:server')) %}
+
+{% set cluster = salt['pillar.get']('rabbitmq:cluster') %}

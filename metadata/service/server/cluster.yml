@@ -1,0 +1,61 @@
+applications:
+- rabbitmq
+parameters:
+  rabbitmq:
+    server:
+      enabled: true
+      secret_key: ${_param:rabbitmq_secret_key}
+      memory:
+        vm_high_watermark: 0.8
+      bind:
+        address: ${_param:cluster_local_address}
+        port: 5672
+      plugins:
+      - amqp_client
+      - rabbitmq_management
+      admin:
+        name: admin
+        password: ${_param:rabbitmq_admin_password}
+      host:
+        '/openstack':
+          enabled: true
+          user: openstack
+          password: ${_param:rabbitmq_openstack_password}
+          policies:
+          - name: HA
+            pattern: '^(?!amq\.).*' 
+            definition: '{"ha-mode": "all"}'
+    cluster:
+      enabled: true
+      name: openstack
+      role: ${_param:rabbitmq_cluster_role}
+      master: ${_param:cluster_node01_hostname}
+      mode: disc
+      members:
+      - name: ${_param:cluster_node01_hostname}
+        host: ${_param:cluster_node01_address}
+      - name: ${_param:cluster_node02_hostname}
+        host: ${_param:cluster_node02_address}
+      - name: ${_param:cluster_node03_hostname}
+        host: ${_param:cluster_node03_address}
+  haproxy:
+    proxy:
+      listen:
+        rabbitmq_cluster:
+          type: rabbitmq
+          binds:
+          - address: ${_param:cluster_vip_address}
+            port: 5672
+          servers:
+          - name: ctl01
+            host: ${_param:cluster_node01_address}
+            port: 5672
+            params: check inter 5000 rise 2 fall 3 
+          - name: ctl02
+            host: ${_param:cluster_node02_address}
+            port: 5672
+            params: backup check inter 5000 rise 2 fall 3
+          - name: ctl03
+            host: ${_param:cluster_node03_address}
+            port: 5672
+            params: backup check inter 5000 rise 2 fall 3
