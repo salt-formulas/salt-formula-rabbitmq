@@ -5,6 +5,7 @@ log_directory = "/var/log/rabbitmq"
 file_match = 'rabbit@.+\.log\.?(?P<Index>\d+)?(.gz)?'
 priority = ["^Index"]
 decoder = "rabbitmq"
+oldest_duration = "168h"
 
 [rabbitmq]
 type = "SandboxDecoder"
