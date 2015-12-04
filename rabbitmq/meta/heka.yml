@@ -1,0 +1,15 @@
+{%- if pillar.rabbitmq.server is defined %}
+input:
+  logstreamer_rabbitmq:
+	type: "LogstreamerInput"
+	log_directory: "/var/log/rabbitmq"
+	file_match: 'rabbit@.+\.log\.?(?P<Index>\d+)?(.gz)?'
+	priority: ["^Index"]
+	decoder: "rabbitmq"
+	oldest_duration: "168h"
+decoder:
+  rabbitmq:
+    type: "SandboxDecoder"
+    filename: "lua_modules/decoders/rabbitmq.lua"
+    module_directory: "/usr/share/heka/lua_modules;/usr/share/heka/lua_modules/common"
+{% endif %}
