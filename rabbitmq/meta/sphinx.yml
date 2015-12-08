@@ -29,5 +29,5 @@ doc:
           value: {{ cluster.members }}
         status:
           name: Status
-          value: {{ salt['cmd.run']('rabbitmqctl cluster_status') }}
+          value: "{{ salt['cmd.run']('rabbitmqctl cluster_status') }}"
     {%- endif %}
