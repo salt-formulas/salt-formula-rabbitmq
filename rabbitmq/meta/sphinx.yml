@@ -1,7 +1,30 @@
+{%- from "rabbitmq/map.jinja" import server with context %}
 doc:
   name: rabbitmq
   description: RabbitMQ is a complete and highly reliable enterprise messaging system based on the emerging AMQP standard.
   role:
     server:
       name: server
-      param: {}
+      param:
+        bind:
+          value: {{ server.bind.host }}:{{ server.bind.port }}
+      endpoint:
+        rabbitmq_amqp:
+          name: server
+          type: rabbitmq_amqp
+          address: {{ server.bind.host }}:{{ server.bind.port }}
+          protocol: tcp
+        rabbitmq_admin:
+          name: server
+          type: rabbitmq_admin
+          address: http://{{ server.bind.host }}:15672/
+          protocol: http
+    {%- if pillar.rabbitmq.cluster is defined %}
+    {%- from "rabbitmq/map.jinja" import cluster with context %}
+    cluster:
+      name: server
+      param:
+        members:
+          name: Cluster members
+          value: {{ cluster.members }}
+    {%- endif %}

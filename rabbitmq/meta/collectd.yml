@@ -1,0 +1,5 @@
+plugin:
+  rabbitmq_server_rabbitmq:
+    plugin: rabbitmq
+    interval: 60
+    template: rabbitmq/files/collectd_rabbitmq.conf
