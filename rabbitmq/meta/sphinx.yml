@@ -25,6 +25,9 @@ doc:
       name: server
       param:
         members:
-          name: Cluster members
+          name: Members
           value: {{ cluster.members }}
+        status:
+          name: Status
+          value: {{ salt['cmd.run']('rabbitmqctl cluster_status') }}
     {%- endif %}
