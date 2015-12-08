@@ -1,8 +1,8 @@
 
+{%- if pillar.rabbitmq is defined %}
 include:
-{% if pillar.rabbitmq.server is defined %}
 - rabbitmq.server
-{% endif %}
-{% if pillar.rabbitmq.cluster is defined %}
+{%- if pillar.rabbitmq.cluster is defined %}
 - rabbitmq.cluster
-{% endif %}
+{%- endif %}
+{%- endif %}
