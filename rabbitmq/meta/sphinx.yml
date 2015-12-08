@@ -7,17 +7,17 @@ doc:
       name: server
       param:
         bind:
-          value: {{ server.bind.host }}:{{ server.bind.port }}
+          value: {{ server.bind.address }}:{{ server.bind.port }}
       endpoint:
         rabbitmq_amqp:
           name: server
           type: rabbitmq_amqp
-          address: {{ server.bind.host }}:{{ server.bind.port }}
+          address: {{ server.bind.address }}:{{ server.bind.port }}
           protocol: tcp
         rabbitmq_admin:
           name: server
           type: rabbitmq_admin
-          address: http://{{ server.bind.host }}:15672/
+          address: http://{{ server.bind.address }}:15672/
           protocol: http
     {%- if pillar.rabbitmq.cluster is defined %}
     {%- from "rabbitmq/map.jinja" import cluster with context %}
