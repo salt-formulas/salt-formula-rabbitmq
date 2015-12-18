@@ -1,8 +1,10 @@
+
+
 parameters:
   rabbitmq:
     _support:
       collectd:
-        enabled: true
+        enabled: false
       heka:
         enabled: false
       sensu:
