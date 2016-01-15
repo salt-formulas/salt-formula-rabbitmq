@@ -1,5 +1,3 @@
-
-
 parameters:
   rabbitmq:
     _support:

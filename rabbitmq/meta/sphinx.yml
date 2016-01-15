@@ -19,6 +19,33 @@ doc:
           type: rabbitmq_admin
           address: http://{{ server.bind.address }}:15672/
           protocol: http
+        {%- if server.bind.address == '0.0.0.0' %}
+        {%- for address in salt['grains.item']('ipv4')['ipv4'] %}
+        {%- if address != '127.0.0.1' %}
+        rabbitmq_amqp:
+          name: server
+          type: rabbitmq_amqp
+          address: {{ address }}:{{ server.bind.port }}
+          protocol: tcp
+        rabbitmq_admin:
+          name: server
+          type: rabbitmq_admin
+          address: http://{{ address }}:15672/
+          protocol: http
+        {%- endif %}
+        {%- endfor %}
+        {%- else %}
+        rabbitmq_amqp:
+          name: server
+          type: rabbitmq_amqp
+          address: {{ server.bind.address }}:{{ server.bind.port }}
+          protocol: tcp
+        rabbitmq_admin:
+          name: server
+          type: rabbitmq_admin
+          address: http://{{ server.bind.address }}:15672/
+          protocol: http
+        {%- endif %}
     {%- if pillar.rabbitmq.cluster is defined %}
     {%- from "rabbitmq/map.jinja" import cluster with context %}
     cluster:
