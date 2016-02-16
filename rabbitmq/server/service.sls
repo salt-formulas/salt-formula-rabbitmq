@@ -46,7 +46,7 @@ sleep_before_rabbitmq_stop:
 
 stop_rabbitmq_service:
   cmd.run:
-  - name: /etc/init.d/rabbitmq-server stop
+  - name: /sbin/service {{ server.service }} stop
   - require:
     - cmd: sleep_before_rabbitmq_stop
 
