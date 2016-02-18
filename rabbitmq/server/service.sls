@@ -46,7 +46,7 @@ sleep_before_rabbitmq_stop:
 
 stop_rabbitmq_service:
   cmd.run:
-  - name: /sbin/service {{ server.service }} stop
+  - name: service {{ server.service }} stop
   - require:
     - cmd: sleep_before_rabbitmq_stop
 
