@@ -14,6 +14,10 @@ parameters:
       bind:
         address: 127.0.0.1
         port: 5672
+      management:
+        bind:
+          address: 127.0.0.1
+          port: 15672
       plugins:
       - amqp_client
       - rabbitmq_management

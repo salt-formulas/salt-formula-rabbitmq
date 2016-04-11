@@ -12,6 +12,10 @@ parameters:
       bind:
         address: ${_param:cluster_local_address}
         port: 5672
+      management:
+        bind:
+          address: ${_param:cluster_local_address}
+          port: 15672
       plugins:
       - amqp_client
       - rabbitmq_management
