@@ -1,5 +1,12 @@
 #!/usr/bin/make -f
 
+SALT_VERSION=$(shell salt-call --version|cut -d ' ' -f 2)
+
 %:
 	dh $@
+
+override_dh_auto_test:
+ifneq ($(SALT_VERSION), 0.17.5)
+	dh_auto_test
+endif
 
