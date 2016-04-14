@@ -1,2 +1,0 @@
-rabbitmq/*             /usr/share/salt-formulas/env/rabbitmq/
-metadata/service/*      /usr/share/salt-formulas/reclass/service/rabbitmq/
