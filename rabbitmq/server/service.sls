@@ -16,6 +16,17 @@ rabbitmq_config:
   - require:
     - pkg: rabbitmq_packages
 
+{%- if server.ssl is defined %}
+rabbitmq_ssl:
+  file.directory:
+  - name: /etc/rabbitmq/ssl
+  - user: root
+  - group: rabbitmq
+  - mode: 750
+  - require:
+    - pkg: rabbitmq_packages
+{%- endif %}
+
 {%- if grains.os_family == 'Debian' %}
 
 rabbitmq_default_config:
