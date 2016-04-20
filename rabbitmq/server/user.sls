@@ -1,4 +1,4 @@
-{%- from "rabbitmq/map.jinja" import server with context %}
+{%- from "rabbitmq/map.jinja" import server, rabbitmq_users with context %}
 {%- if server.enabled %}
 
 include:
@@ -22,6 +22,15 @@ rabbit_user_admin_present:
   - require:
     - service: rabbitmq_service
 
+{%- endif %}
+
+{%- if 'guest' not in rabbitmq_users.keys() %}
+{#- Delete default guest user if we are not using it #}
+rabbitmq_user_guest_absent:
+  rabbitmq_user.absent:
+  - name: guest
+  - require:
+    - service: rabbitmq_service
 {%- endif %}
 
 {%- endif %}

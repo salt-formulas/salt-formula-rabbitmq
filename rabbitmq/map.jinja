@@ -40,3 +40,8 @@
 }, merge=salt['pillar.get']('rabbitmq:server')) %}
 
 {% set cluster = salt['pillar.get']('rabbitmq:cluster') %}
+
+{%- set rabbitmq_users = {} %}
+{%- for host_name, host in server.get('host', {}).iteritems() %}
+{%- do rabbitmq_users.update({host.user: [host]}) %}
+{%- endfor %}

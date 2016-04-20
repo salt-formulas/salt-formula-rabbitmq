@@ -8,4 +8,13 @@ rabbitmq:
     admin:
       name: adminuser
       password: pwd
+    host:
+      '/':
+        enabled: true
+        user: guest
+        password: guest
+        policies:
+        - name: HA
+          pattern: '^(?!amq\.).*'
+          definition: '{"ha-mode": "all"}'
 
