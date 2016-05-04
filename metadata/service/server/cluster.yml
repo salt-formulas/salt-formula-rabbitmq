@@ -22,15 +22,6 @@ parameters:
       admin:
         name: admin
         password: ${_param:rabbitmq_admin_password}
-      host:
-        '/openstack':
-          enabled: true
-          user: openstack
-          password: ${_param:rabbitmq_openstack_password}
-          policies:
-          - name: HA
-            pattern: '^(?!amq\.).*' 
-            definition: '{"ha-mode": "all"}'
     cluster:
       enabled: true
       name: openstack
