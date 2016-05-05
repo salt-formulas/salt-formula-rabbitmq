@@ -1,0 +1,23 @@
+{%- from "rabbitmq/map.jinja" import server with context -%}
+iptables:
+  rules:
+    - destination_port: {{ server.bind.port }}
+      protocol: tcp
+      jump: ACCEPT
+    - destination_port: 25672
+      protocol: tcp
+      jump: ACCEPT
+    {%- if server.get('ssl', {}).get('enabled', False) %}
+    - destination_port: {{ server.bind.get('ssl', {}).get('port', 5671) }}
+      protocol: tcp
+      jump: ACCEPT
+    {%- endif %}
+    {%- if 'rabbitmq_management' in server.plugins %}
+    - destination_port: {{ server.management.bind.port }}
+      protocol: tcp
+      jump: ACCEPT
+    {%- endif %}
+
+{#-
+vim: syntax=jinja
+-#}
