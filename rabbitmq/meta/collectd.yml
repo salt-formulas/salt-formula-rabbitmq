@@ -6,4 +6,4 @@ plugin:
   collectd_processes:
     process:
       rabbitmq:
-        match: "^[-\.\/a-z0-9]+beam(\.smp)?\ .*/var/lib/rabbitmq.*kernel.*mnesia.*"
+        match: '^[-\.\/a-z0-9]+beam(\.smp)?\ .*/var/lib/rabbitmq.*kernel.*mnesia.*'
