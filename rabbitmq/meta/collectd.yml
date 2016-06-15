@@ -4,6 +4,9 @@ plugin:
    # interval: 60
     #template: rabbitmq/files/collectd_rabbitmq.conf
   collectd_processes:
+    plugin: processes
+    interval: 60
+    template: collectd/files/collectd_processes.conf
     process:
       rabbitmq:
         match: '^[-\.\/a-z0-9]+beam(\.smp)?\ .*/var/lib/rabbitmq.*kernel.*mnesia.*'
