@@ -10,3 +10,5 @@ plugin:
     process:
       rabbitmq:
         match: '^[-\.\/a-z0-9]+beam(\.smp)?\ .*/var/lib/rabbitmq.*kernel.*mnesia.*'
+      collectdmon:
+        match: collectdmon
