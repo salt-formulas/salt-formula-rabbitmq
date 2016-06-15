@@ -1,0 +1,8 @@
+name: rabbitmq
+os: Arch, Debian, RedHat
+os_family: Arch, Debian, RedHat
+version: 201606
+release: 1
+summary: RabbitMQ Salt formula
+description: Install and configure RabbitMQ server and client.
+top_level_dir: rabbitmq
