@@ -21,24 +21,24 @@ check:
     - {{ network.fqdn|replace('.', '-') }}
 {%- else %}
   remote_rabbitmq_server_tcp_{{ network.fqdn }}:
-    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_tcp -H {% if grains.ipv4[1] == '127.0.0.1' %}{{ grains.ipv4[0] }}{% else %}{{ grains.ipv4[1] }}{% endif %} -p 5672"
+    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_tcp -H {% if grains.ipv4[0] == '127.0.0.1' %}{{ grains.ipv4[1] }}{% else %}{{ grains.ipv4[0] }}{% endif %} -p 5672"
     interval: 60
     occurrences: 1
     subscribers:
     - remote-network
 {%- endif %}
-local_rabbitmq_alive_{{ address }}:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-amqp-alive.rb -w {{ address }}"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - local-rabbitmq-server
-local_rabbitmq_eva_diag_{{ address }}:
-  command: "PATH=$PATH:/etc/sensu/plugins check_rabbitmq_stuck_nodes.sh"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - local-rabbitmq-server
+  local_rabbitmq_alive_{{ address }}:
+    command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-amqp-alive.rb -w {{ address }}"
+    interval: 60
+    occurrences: 1
+    subscribers:
+    - local-rabbitmq-server
+  local_rabbitmq_eva_diag_{{ address }}:
+    command: "PATH=$PATH:/etc/sensu/plugins check_rabbitmq_stuck_nodes.sh"
+    interval: 60
+    occurrences: 1
+    subscribers:
+    - local-rabbitmq-server
 
 {# 
 
