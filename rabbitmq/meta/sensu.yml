@@ -35,7 +35,7 @@ check:
     - remote-network
   local_rabbitmq_eva_diag_{{ address }}:
     command: "PATH=$PATH:/etc/sensu/plugins check_rabbitmq_stuck_nodes.sh"
-    interval: 60
+    interval: 300
     occurrences: 1
     subscribers:
     - local-rabbitmq-server
