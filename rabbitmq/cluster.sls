@@ -5,7 +5,7 @@ include:
 - linux.network.host
 - rabbitmq.server.service
 
-{% if cluster.get('role', 'slave') == 'master' %}
+{% if cluster.get('role', 'None') == 'master' %}
 
 rabbitmq_cluster_name:
   cmd.run:
@@ -16,7 +16,7 @@ rabbitmq_cluster_name:
   - require:
     - service: rabbitmq_service
 
-{% else %}
+{% elif cluster.get('role', 'None') == 'slave' %}
 
 rabbit@master:
   rabbitmq_cluster.join:
@@ -27,6 +27,10 @@ rabbit@master:
   {%- endif %}
   - require:
     - service: rabbitmq_service
+
+{%- else %}
+
+{# Container deployment role independent #}
 
 {%- endif %}
 
