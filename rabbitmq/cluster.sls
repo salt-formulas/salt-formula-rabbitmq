@@ -7,11 +7,12 @@ include:
 
 {% if cluster.get('role', 'slave') == 'master' %}
 
-rabbitmq_cluster_init:
+rabbitmq_cluster_name:
   cmd.run:
-  - names:
-    - rabbitmqctl set_cluster_name {{ cluster.get('name', 'rabbitmq') }}
-  - unless: test -e /var/lib/rabbitmq/.cluster-installed
+  - name: >
+      rabbitmqctl set_cluster_name {{ cluster.get('name', 'rabbitmq') }} &&
+      echo "{{ cluster.get('name', 'rabbitmq') }}" > /var/lib/rabbitmq/.cluster_name
+  - creates: /var/lib/rabbitmq/.cluster_name
   - require:
     - service: rabbitmq_service
 
@@ -28,13 +29,5 @@ rabbit@master:
     - service: rabbitmq_service
 
 {%- endif %}
-
-rabbitmq_cluster_init_final:
-  cmd.run:
-  - names:
-    - touch /var/lib/rabbitmq/.cluster-installed
-  - unless: test -e /var/lib/rabbitmq/.cluster-installed
-  - require:
-    - service: rabbitmq_service
 
 {%- endif %}
