@@ -7,7 +7,7 @@
 {%- endif %}
 check:
   local_rabbitmq_server_proc:
-    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_procs -C beam.smp -u rabbitmq -c 1:2"
+    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_procs -C beam.smp -u rabbitmq -c 1:5"
     interval: 60
     occurrences: 1
     subscribers:
@@ -34,9 +34,9 @@ check:
     subscribers:
     - remote-network
   local_rabbitmq_eva_diag_{{ address }}:
-    command: "PATH=$PATH:/etc/sensu/plugins check_rabbitmq_stuck_nodes.sh"
+    command: "PATH=$PATH:/etc/sensu/plugins check_rabbitmq_stuck_nodes.sh -w 5 -c 10"
     interval: 300
-    occurrences: 1
+    occurrences: 3
     subscribers:
     - local-rabbitmq-server
 
