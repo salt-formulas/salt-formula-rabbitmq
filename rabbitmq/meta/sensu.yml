@@ -6,8 +6,14 @@
 {%- set address = server.bind.address %}
 {%- endif %}
 check:
-  local_rabbitmq_server_proc:
+  local_rabbitmq_server_beam.smp_proc:
     command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_procs -C beam.smp -u rabbitmq -c 1:5"
+    interval: 60
+    occurrences: 1
+    subscribers:
+    - local-rabbitmq-server
+  local_rabbitmq_server_epmd_proc:
+    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_procs -C epmd -u rabbitmq -c 1:2"
     interval: 60
     occurrences: 1
     subscribers:
@@ -39,117 +45,3 @@ check:
     occurrences: 3
     subscribers:
     - local-rabbitmq-server
-
-{# 
-
-remote_rabbitmq_openstack_alive:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-amqp-alive.rb -w {{ address }} -v %2Fopenstack -u {{ server.admin.name }} --password {{ server.admin.password }}"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-{%- if pillar.nova.compute is defined %}
-remote_rabbitmq_metrics_compute:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter compute"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-{%- endif %}
-remote_rabbitmq_metrics_scheduler:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter scheduler"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_engine:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter engine"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_console:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter console"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_cinder_volume:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter cinder-volume"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_conductor:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter conductor"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_overview_metrics:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-overview-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }}"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_contrail_device_manager:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --filter device_manager"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_contrail_vnc_config:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --filter vnc_config"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_metrics_openstack_reply:
-  command: "PATH=$PATH:/etc/sensu/plugins rabbitmq-queue-metrics.rb --host {{ address }} --user {{ server.admin.name }} --password {{ server.admin.password }} --filter reply"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_scheduler:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue scheduler"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_engine:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue engine"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_console:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue console"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_cinder_volume:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue cinder-volume"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_cinder_scheduler:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue cinder-scheduler"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_conductor:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue conductor"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-remote_rabbitmq_queue_compute:
-  command: "PATH=$PATH:/etc/sensu/plugins check-rabbitmq-queue.rb --host {{ address }} --password {{ server.admin.password }} --user {{ server.admin.name }} -w 50 -c 100 --queue compute"
-  interval: 60
-  occurrences: 1
-  subscribers:
-  - remote-network
-#}
