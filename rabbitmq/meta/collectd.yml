@@ -1,14 +1,12 @@
+{%- from "rabbitmq/map.jinja" import server with context %}
 plugin:
- # rabbitmq_server_rabbitmq:
-  #  plugin: rabbitmq
-   # interval: 60
-    #template: rabbitmq/files/collectd_rabbitmq.conf
+  rabbitmq_info:
+    plugin: python
+    execution: local
+    template: collectd/files/collectd_check_local_endpoint.conf
+    username: {{ server.admin.username }}
+    password: {{ server.admin.password }}
   collectd_processes:
-    plugin: processes
-    interval: 60
-    template: collectd/files/collectd_processes.conf
     process:
       rabbitmq:
         match: '^[-\.\/a-z0-9]+beam(\.smp)?\ .*/var/lib/rabbitmq.*kernel.*mnesia.*'
-      collectdmon:
-        match: collectdmon
