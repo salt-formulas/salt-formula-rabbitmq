@@ -11,20 +11,47 @@ rabbitmq_vhost_{{ host_name }}:
   - name: {{ host_name }}
   - require:
     - service: rabbitmq_service
-  - require_in:
-    - rabbitmq_user: rabbitmq_user_{{ host.user }}
 {%- endif %}
+
+{%- if salt['pkg.version_installed'](server.pkg) %}
+
+{%- if not salt['rabbitmq.user_exists'](host.user) %}
 
 rabbitmq_user_{{ host.user }}:
   rabbitmq_user.present:
   - name: {{ host.user }}
   - password: {{ host.password }}
   - force: true
+  {%- if host_name != '/' %}
+  - require:
+    - rabbitmq_vhost_{{ host_name }}
+  {%- endif %}
   - perms:
     - '{{ host_name }}':
       - '.*'
       - '.*'
       - '.*'
+
+{%- endif %}
+
+{%- else %}
+
+rabbitmq_user_{{ host.user }}:
+  rabbitmq_user.present:
+  - name: {{ host.user }}
+  - password: {{ host.password }}
+  - force: true
+  {%- if host_name != '/' %}
+  - require:
+    - rabbitmq_vhost_{{ host_name }}
+  {%- endif %}
+  - perms:
+    - '{{ host_name }}':
+      - '.*'
+      - '.*'
+      - '.*'
+
+{%- endif %}
 
 {%- for policy in host.get('policies', []) %}
 
