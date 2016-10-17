@@ -3,7 +3,7 @@ plugin:
   rabbitmq_info:
     plugin: python
     execution: local
-    template: collectd/files/collectd_check_local_endpoint.conf
+    template: rabbitmq/files/collectd_rabbitmq_info.conf
     username: {{ server.admin.username }}
     password: {{ server.admin.password }}
   collectd_processes:

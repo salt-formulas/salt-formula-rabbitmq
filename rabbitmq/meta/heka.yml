@@ -17,7 +17,7 @@ log_collector:
   splitter:
     rabbitmq_splitter:
       engine: token
-      delimiter: "\n\n(=[^=]+====)"
+      delimiter: '\n\n(=[^=]+====)'
       delimiter_eol: false
 metric_collector:
   filter:
@@ -29,7 +29,6 @@ metric_collector:
       message_matcher: "(Type == 'metric' || Type == 'heka.sandbox.metric') && (Fields[name] == 'rabbitmq_check')"
       ticker_interval: 10
       config:
-        hostname: '{{ grains.fqdn.split('.')[0] }}'
         afd_type: 'service'
         afd_file: 'lma_alarms_rabbitmq_service_check'
         afd_cluster_name: 'rabbitmq-service'
@@ -44,7 +43,6 @@ metric_collector:
       message_matcher: "(Type == 'metric' || Type == 'heka.sandbox.metric') && (Fields[name] == 'rabbitmq_remaining_disk')"
       ticker_interval: 10
       config:
-        hostname: '{{ grains.fqdn.split('.')[0] }}'
         afd_type: 'service'
         afd_file: 'lma_alarms_rabbitmq_cluster_disk'
         afd_cluster_name: 'rabbitmq-cluster'
