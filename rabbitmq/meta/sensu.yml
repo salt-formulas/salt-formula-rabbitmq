@@ -44,4 +44,4 @@ check:
     interval: 300
     occurrences: 3
     subscribers:
-    - local-rabbitmq-server
+    - {{ grains['fqdn']|replace('.', '-') }}
