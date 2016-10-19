@@ -1,10 +1,10 @@
 {%- from "rabbitmq/map.jinja" import server with context %}
-plugin:
+local_plugin:
   rabbitmq_info:
     plugin: python
     execution: local
     template: rabbitmq/files/collectd_rabbitmq_info.conf
-    username: {{ server.admin.username }}
+    username: {{ server.admin.name }}
     password: {{ server.admin.password }}
   collectd_processes:
     process:
