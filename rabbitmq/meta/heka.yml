@@ -15,8 +15,8 @@ log_collector:
       decoder: "rabbitmq_decoder"
       splitter: "rabbitmq_splitter"
   splitter:
-    rabbitmq_splitter:
-      engine: token
+    rabbitmq:
+      engine: regex
       delimiter: '\n\n(=[^=]+====)'
       delimiter_eol: false
 metric_collector:
