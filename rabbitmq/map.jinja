@@ -67,9 +67,9 @@
             },
         },
     },
-}, merge=salt['pillar.get']('rabbitmq:server')) %}
+}, merge=pillar.rabbitmq.get('server', {})) %}
 
-{% set cluster = salt['pillar.get']('rabbitmq:cluster') %}
+{% set cluster = pillar.rabbitmq.get('cluster', {}) %}
 
 {%- set rabbitmq_users = {} %}
 {%- for host_name, host in server.get('host', {}).iteritems() %}
