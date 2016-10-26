@@ -20,32 +20,86 @@ log_collector:
       delimiter: '\n\n(=[^=]+====)'
       delimiter_eol: false
 metric_collector:
-  filter:
-    rabbitmq_service_status:
-      engine: sandbox
-      module_file: /usr/share/lma_collector/filters/afd.lua
-      module_dir: /usr/share/lma_collector_modules;/usr/share/heka/lua_modules
-      preserve_data: false
-      message_matcher: "(Type == 'metric' || Type == 'heka.sandbox.metric') && (Fields[name] == 'rabbitmq_check')"
-      ticker_interval: 10
-      config:
-        afd_type: 'service'
-        afd_file: 'lma_alarms_rabbitmq_service_check'
-        afd_cluster_name: 'rabbitmq-service'
-        afd_logical_name: 'check'
-        activate_alerting: true
-        enable_notification: false
-    rabbitmq_cluster_disk:
-      engine: sandbox
-      module_file: /usr/share/lma_collector/filters/afd.lua
-      module_dir: /usr/share/lma_collector_modules;/usr/share/heka/lua_modules
-      preserve_data: false
-      message_matcher: "(Type == 'metric' || Type == 'heka.sandbox.metric') && (Fields[name] == 'rabbitmq_remaining_disk')"
-      ticker_interval: 10
-      config:
-        afd_type: 'service'
-        afd_file: 'lma_alarms_rabbitmq_cluster_disk'
-        afd_cluster_name: 'rabbitmq-cluster'
-        afd_logical_name: 'disk'
-        activate_alerting: true
-        enable_notification: false
+  trigger:
+    rabbitmq_disk_limit_critical:
+      description: 'RabbitMQ has reached the free disk threshold. All producers are blocked.'
+      severity: 'critical'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_disk
+        relational_operator: '<='
+        threshold: 0
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_disk_limit_warning:
+      description: 'RabbitMQ is getting close to the free disk threshold.'
+      severity: 'warning'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_disk
+        relational_operator: '<='
+        threshold: 104857600 # 100MB
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_memory_limit_critical:
+      description: 'RabbitMQ has reached the memory threshold. All producers are blocked.'
+      severity: 'critical'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_memory
+        relational_operator: '<='
+        threshold: 0
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_memory_limit_warning:
+      description: 'RabbitMQ is getting close to the memory threshold.'
+      severity: warning
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_memory
+        relational_operator: '<='
+        threshold: 104857600 # 100MB
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_queue_warning:
+      description: 'The number of outstanding messages is too high.'
+      severity: warning
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_messages
+        relational_operator: '>='
+        threshold: 200
+        window: 120
+        periods: 0
+        function: avg
+  alarm:
+    rabbitmq_server_disk:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_disk_limit_warning
+      - rabbitmq_disk_limit_critical
+      dimension:
+        node_role: rabbitmq-cluster
+        logical_name: disk
+    rabbitmq_server_memory:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_memory_limit_warning
+      - rabbitmq_memory_limit_critical
+      dimension:
+        node_role: rabbitmq-cluster
+        logical_name: memory
+    rabbitmq_server_queu:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_queue_warning
+      dimension:
+        node_role: rabbitmq-cluster
+        logical_name: queue
