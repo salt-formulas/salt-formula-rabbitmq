@@ -2,8 +2,9 @@
 local_plugin:
   rabbitmq_info:
     plugin: python
-    execution: local
     template: rabbitmq/files/collectd_rabbitmq_info.conf
+    host: {{ server.management.bind.address }}
+    port: {{ server.management.bind.port }}
     username: {{ server.admin.name }}
     password: {{ server.admin.password }}
   collectd_processes:
