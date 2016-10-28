@@ -1,21 +1,19 @@
 log_collector:
   decoder:
-    rabbitmq_service:
+    rabbitmq_log:
       engine: sandbox
       module_file: /usr/share/lma_collector/decoders/rabbitmq.lua
-      module_dir: /usr/share/lma_collector_modules;/usr/share/heka/lua_modules
-      config:
-        include_full_notification: false
+      module_dir: /usr/share/lma_collector/common;/usr/share/heka/lua_modules
   input:
-    rabbitmq_log_stream:
+    rabbitmq_log:
       engine: logstreamer
       log_directory: "/var/log/rabbitmq"
       file_match: 'rabbit@(?P<Node>.+)\.log$'
       differentiator: ["rabbitmq.", "Node"]
-      decoder: "rabbitmq_decoder"
-      splitter: "rabbitmq_splitter"
+      decoder: "rabbitmq_log_decoder"
+      splitter: "rabbitmq_log_splitter"
   splitter:
-    rabbitmq:
+    rabbitmq_log:
       engine: regex
       delimiter: '\n\n(=[^=]+====)'
       delimiter_eol: false
