@@ -1,6 +1,6 @@
-rabbitmq_state:
+rabbitmq.server:
   salt.state:
-    - tgt: 'G@roles:rabbitmq.server and not G@roles:rabbitmq.cluster'
+    - tgt: 'I@rabbitmq:server and not I@rabbitmq:cluster'
     - tgt_type: compound
     - sls: rabbitmq
 
