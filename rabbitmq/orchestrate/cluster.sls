@@ -1,14 +1,17 @@
-salt_rabbitmq_cluster_master:
+rabbitmq.cluster.master:
   salt.state:
-    - tgt: 'G@roles:rabbitmq.cluster and I@rabbitmq:cluster:role:master'
-    - tgt_type: compound
+    - tgt: 'rabbitmq:cluster:role:master'
+    - tgt_type: pillar
+    - queue: True
     - sls: rabbitmq
 
-salt_rabbitmq_cluster_slave:
+rabbitmq.cluster.slave:
   salt.state:
-    - tgt: 'G@roles:rabbitmq.cluster and I@rabbitmq:cluster:role:slave'
-    - tgt_type: compound
+    - tgt: 'rabbitmq:cluster:role:slave'
+    - tgt_type: pillar
+    - queue: True
     - sls: rabbitmq
+    - batch: 1
     - require:
-      - salt: salt_rabbitmq_cluster_master
+      - salt: rabbitmq.cluster.master
 
