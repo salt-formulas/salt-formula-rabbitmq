@@ -27,7 +27,7 @@ check:
     - {{ network.fqdn|replace('.', '-') }}
 {%- else %}
   remote_rabbitmq_server_tcp_{{ network.fqdn }}:
-    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_tcp -H {% if grains.ipv4[0] == '127.0.0.1' %}{{ grains.ipv4[1] }}{% else %}{{ grains.ipv4[0] }}{% endif %} -p 5672"
+    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_tcp -H {{ address }} -p 5672"
     interval: 60
     occurrences: 1
     subscribers:
@@ -45,3 +45,4 @@ check:
     occurrences: 3
     subscribers:
     - {{ grains['fqdn']|replace('.', '-') }}
+
