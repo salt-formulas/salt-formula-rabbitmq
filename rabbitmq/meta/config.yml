@@ -1,0 +1,7 @@
+config:
+  {%- if pillar.rabbitmq.server is defined %}
+  {%- from "rabbitmq/map.jinja" import server with context %}
+  rabbitmq.config:
+    source: "salt://rabbitmq/files/rabbitmq.config"
+    template: jinja
+  {%- endif %}

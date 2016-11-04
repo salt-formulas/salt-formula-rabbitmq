@@ -1,0 +1,30 @@
+parameters:
+  kubernetes:
+    control:
+      configmap:
+        rabbitmq-server:
+          grains:
+            os_family: Debian
+          pillar:
+            rabbitmq:
+              server:
+                enabled: true
+                secret_key: ${_param:rabbitmq_secret_key}
+                memory:
+                  vm_high_watermark: 0.8
+                bind:
+                  address: 0.0.0.0
+                  port: 5672
+                management:
+                  bind:
+                    address: 0.0.0.0
+                    port: 15672
+                plugins:
+                - amqp_client
+                - rabbitmq_management
+                admin:
+                  name: admin
+                  password: ${_param:rabbitmq_admin_password}
+              cluster:
+                enabled: true
+                mode: disc
