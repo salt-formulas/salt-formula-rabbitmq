@@ -17,3 +17,84 @@ log_collector:
       engine: regex
       delimiter: '\n\n(=[^=]+====)'
       delimiter_eol: false
+metric_collector:
+  trigger:
+    rabbitmq_disk_limit_critical:
+      description: 'RabbitMQ has reached the free disk threshold. All producers are blocked.'
+      severity: 'critical'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_disk
+        relational_operator: '<='
+        threshold: 0
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_disk_limit_warning:
+      description: 'RabbitMQ is getting close to the free disk threshold.'
+      severity: 'warning'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_disk
+        relational_operator: '<='
+        threshold: 104857600 # 100MB
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_memory_limit_critical:
+      description: 'RabbitMQ has reached the memory threshold. All producers are blocked.'
+      severity: 'critical'
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_memory
+        relational_operator: '<='
+        threshold: 0
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_memory_limit_warning:
+      description: 'RabbitMQ is getting close to the memory threshold.'
+      severity: warning
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_remaining_memory
+        relational_operator: '<='
+        threshold: 104857600 # 100MB
+        window: 20
+        periods: 0
+        function: min
+    rabbitmq_queue_warning:
+      description: 'The number of outstanding messages is too high.'
+      severity: warning
+      no_data_policy: 'okay'
+      rules:
+      - metric: rabbitmq_messages
+        relational_operator: '>='
+        threshold: 200
+        window: 120
+        periods: 0
+        function: avg
+  alarm:
+    rabbitmq_server_disk:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_disk_limit_warning
+      - rabbitmq_disk_limit_critical
+      dimension:
+        service: rabbitmq-cluster
+    rabbitmq_server_memory:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_memory_limit_warning
+      - rabbitmq_memory_limit_critical
+      dimension:
+        service: rabbitmq-cluster
+    rabbitmq_server_queue:
+      notifications: False
+      alerting: True
+      triggers:
+      - rabbitmq_queue_warning
+      dimension:
+        service: rabbitmq-cluster
