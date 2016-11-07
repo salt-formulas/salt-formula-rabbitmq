@@ -12,6 +12,7 @@ rabbitmq_config:
   - template: jinja
   - user: rabbitmq
   - group: rabbitmq
+  - makedirs: True
   - mode: 440
   - require:
     - pkg: rabbitmq_packages

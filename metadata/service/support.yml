@@ -11,3 +11,5 @@ parameters:
         enabled: true
       iptables:
         enabled: true
+      config:
+        enabled: true
