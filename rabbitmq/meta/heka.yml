@@ -98,3 +98,15 @@ metric_collector:
       - rabbitmq_queue_warning
       dimension:
         service: rabbitmq-cluster
+aggregator:
+  alarm_cluster:
+    rabbitmq_cluster:
+      policy: highest_severity
+      match:
+        service: rabbitmq-cluster
+      members:
+      - rabbitmq_server_disk
+      - rabbitmq_server_memory
+      - rabbitmq_server_queue
+      dimension:
+        service: rabbitmq
