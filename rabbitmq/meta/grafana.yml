@@ -1,0 +1,3 @@
+dashboard:
+  rabbitmq:
+    template: rabbitmq/files/RabbitMQ.json
