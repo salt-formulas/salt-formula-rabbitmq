@@ -77,24 +77,21 @@ metric_collector:
         function: avg
   alarm:
     rabbitmq_server_disk:
-      notifications: False
-      alerting: True
+      alerting: enabled
       triggers:
       - rabbitmq_disk_limit_warning
       - rabbitmq_disk_limit_critical
       dimension:
         service: rabbitmq-cluster
     rabbitmq_server_memory:
-      notifications: False
-      alerting: True
+      alerting: enabled
       triggers:
       - rabbitmq_memory_limit_warning
       - rabbitmq_memory_limit_critical
       dimension:
         service: rabbitmq-cluster
     rabbitmq_server_queue:
-      notifications: False
-      alerting: True
+      alerting: enabled
       triggers:
       - rabbitmq_queue_warning
       dimension:
@@ -102,6 +99,7 @@ metric_collector:
 aggregator:
   alarm_cluster:
     rabbitmq_cluster:
+      alerting: enabled_with_notification
       policy: highest_severity
       match:
         service: rabbitmq-cluster
