@@ -11,7 +11,7 @@ rabbit_user_admin_present:
   - name: {{ server.admin.name }}
   - password: {{ server.admin.password }}
   - force: True
-  - tags: management administrator
+  - tags: administrator
   - perms:
     {%- for vhost_name, vhost in server.get('host', {}).iteritems() %}
     - '{{ vhost_name }}':
