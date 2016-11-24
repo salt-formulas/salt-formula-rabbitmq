@@ -113,7 +113,7 @@ metric_collector:
 aggregator:
   alarm_cluster:
     rabbitmq_cluster:
-      alerting: enabled_with_notification
+      alerting: enabled
       policy: highest_severity
       match:
         service: rabbitmq-cluster
@@ -123,11 +123,13 @@ aggregator:
       - rabbitmq_server_queue
       dimension:
         service: rabbitmq
+        nagios_host: 01-service-clusters
     rabbitmq_service:
       # A check failure on a single node doesn't mean that the whole cluster
       # is down, this is why a 'hostname' group_by and 'majority_of_members'
       # policy are used here
       policy: majority_of_members
+      alerting: enabled
       group_by: hostname
       match:
         member: rabbitmq_check
@@ -135,8 +137,10 @@ aggregator:
       - rabbitmq_check
       dimension:
         service: rabbitmq
+        nagios_host: 01-service-clusters
     rabbitmq:
       policy: highest_severity
+      alerting: enabled_with_notification
       match:
         service: rabbitmq
       members:
@@ -144,3 +148,4 @@ aggregator:
       - rabbitmq_service
       dimension:
         cluster_name: rabbitmq
+        nagios_host: 00-top-clusters
