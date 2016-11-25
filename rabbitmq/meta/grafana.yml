@@ -1,0 +1,4 @@
+dashboard:
+  rabbitmq:
+    format: json
+    template: rabbitmq/files/grafana_dashboards/rabbitmq_influxdb.json
