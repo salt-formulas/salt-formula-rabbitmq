@@ -89,15 +89,15 @@ metric_collector:
     rabbitmq_server_disk:
       alerting: enabled
       triggers:
-      - rabbitmq_disk_limit_warning
       - rabbitmq_disk_limit_critical
+      - rabbitmq_disk_limit_warning
       dimension:
         service: rabbitmq-cluster
     rabbitmq_server_memory:
       alerting: enabled
       triggers:
-      - rabbitmq_memory_limit_warning
       - rabbitmq_memory_limit_critical
+      - rabbitmq_memory_limit_warning
       dimension:
         service: rabbitmq-cluster
     rabbitmq_server_queue:
@@ -115,6 +115,9 @@ aggregator:
     rabbitmq_cluster:
       alerting: enabled
       policy: highest_severity
+      # A 'hostname' group_by is required because an alarm on a single node has
+      # an impact on the whole cluster.
+      group_by: hostname
       match:
         service: rabbitmq-cluster
       members:
