@@ -126,9 +126,9 @@ aggregator:
         nagios_host: 01-service-clusters
     rabbitmq_service:
       # A check failure on a single node doesn't mean that the whole cluster
-      # is down, this is why a 'hostname' group_by and 'majority_of_members'
+      # is down, this is why a 'hostname' group_by and 'availability_of_members'
       # policy are used here
-      policy: majority_of_members
+      policy: availability_of_members
       alerting: enabled
       group_by: hostname
       match:
