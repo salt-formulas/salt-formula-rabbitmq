@@ -17,4 +17,7 @@ rabbitmq:
         - name: HA
           pattern: '^(?!amq\.).*'
           definition: '{"ha-mode": "all"}'
+    memory:
+      vm_high_watermark: 0.4
+    plugins: ['']
 
