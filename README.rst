@@ -94,8 +94,68 @@ HA Queues definition
           password: 'password'
           policies:
           - name: HA
-            pattern: '^(?!amq\.).*' 
+            pattern: '^(?!amq\.).*'
             definition: '{"ha-mode": "all"}'
+
+
+
+Enable TLS support
+------------------
+
+The certs and private key passing:
+
+.. code-block:: yaml
+
+   rabbitmq:
+      server:
+        enabled: true
+        ...
+        ssl:
+          enabled: True
+
+          cacert_chain: |
+          -----BEGIN CERTIFICATE-----
+                    ...
+          -----END CERTIFICATE-------
+
+          key: |
+          -----BEGIN RSA PRIVATE KEY-----
+                    ...
+          -----END RSA PRIVATE KEY-------
+
+          cert: |
+          -----BEGIN CERTIFICATE-----
+                    ...
+          -----END CERTIFICATE-------
+
+
+Also you can pass them via specifing a name of ca authority at salt master:
+
+.. code-block:: yaml
+
+   rabbitmq:
+      server:
+        enabled: true
+        ...
+        ssl:
+          enabled: True
+          authority: CA_Authority_Name
+
+In this case keys and certs will be pulled from:
+
+`salt://pki/{{ authority }}/certs/{ rabbitmq.{cert|key} | ca.cert }`
+
+--
+
+Defaut port for TLS is **5671**:
+
+.. code-block:: yaml
+
+  rabbitmq:
+    server:
+      bind:
+        ssl:
+         port: 5671
 
 Usage
 =====
@@ -105,9 +165,9 @@ Check cluster status, example shows running cluster with 3 nodes: ctl-1, ctl-2, 
 .. code-block:: yaml
 
     > rabbitmqctl cluster_status
-    
+
     Cluster status of node 'rabbit@ctl-1' ...
-    [{nodes,[{disc,['rabbit@ctl-1','rabbit@ctl-2','rabbit@ctl-3']}]}, 
+    [{nodes,[{disc,['rabbit@ctl-1','rabbit@ctl-2','rabbit@ctl-3']}]},
      {running_nodes,['rabbit@ctl-3','rabbit@ctl-2','rabbit@ctl-1']},
      {partitions,[]}]
     ...done.

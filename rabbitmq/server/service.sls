@@ -107,6 +107,13 @@ rabbitmq_service:
   - name: {{ server.service }}
   - watch:
     - file: rabbitmq_config
+      {% if server.ssl.enabled %}
+    - file: rabbitmq_cacertificate
+    - file: rabbitmq_certificate
+    - file: rabbitmq_server_key
+    - file: rabbitmq_ssl_all_file
+    - file: rabbitmq_ssl_env
+      {%- endif %}
 {%- endif %}
 
 {%- if grains.get('virtual_subtype', None) == "Docker" %}

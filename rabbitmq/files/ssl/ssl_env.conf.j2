@@ -1,0 +1,7 @@
+# Obtaining of an Erlang ssl library path
+export HOME="/var/lib/rabbitmq/"
+ERL_SSL_PATH=`erl -eval 'io:format("~p", [code:lib_dir(ssl, ebin)]),halt().' -noshell`
+
+# Add SSL-related environment vars for rabbitmq-server and rabbitmqctl
+SERVER_ADDITIONAL_ERL_ARGS="-pa $ERL_SSL_PATH -proto_dist inet_tls -ssl_dist_opt server_certfile {{ all_file }} -ssl_dist_opt server_secure_renegotiate true client_secure_renegotiate true server_cacertfile {{ ca_file }}"
+CTL_ERL_ARGS="$SERVER_ADDITIONAL_ERL_ARGS"
