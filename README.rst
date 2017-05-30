@@ -102,7 +102,21 @@ HA Queues definition
 Enable TLS support
 ------------------
 
-The certs and private key passing:
+To enable support of TLS for rabbitmq-server you need to provide a path to cacert, server cert and private key :
+
+.. code-block:: yaml
+
+   rabbitmq:
+      server:
+        enabled: true
+        ...
+        ssl:
+          enabled: True
+          key_file: /etc/rabbitmq/ssl/key.pem
+          cert_file: /etc/rabbitmq/ssl/cert.pem
+          ca_file: /etc/rabbitmq/ssl/ca.pem
+
+To manage content of these files you can either use the following options:
 
 .. code-block:: yaml
 
@@ -113,23 +127,27 @@ The certs and private key passing:
         ssl:
           enabled: True
 
-          cacert_chain: |
-          -----BEGIN CERTIFICATE-----
-                    ...
-          -----END CERTIFICATE-------
-
+          key_file: /etc/rabbitmq/ssl/key.pem
           key: |
           -----BEGIN RSA PRIVATE KEY-----
                     ...
           -----END RSA PRIVATE KEY-------
 
+          ca_file: /etc/rabbitmq/ssl/ca.pem
+          cacert_chain: |
+          -----BEGIN CERTIFICATE-----
+                    ...
+          -----END CERTIFICATE-------
+
+          cert_file: /etc/rabbitmq/ssl/cert.pem
           cert: |
           -----BEGIN CERTIFICATE-----
                     ...
           -----END CERTIFICATE-------
 
 
-Also you can pass them via specifing a name of ca authority at salt master:
+Or you can use the `salt.minion.cert` salt state which
+creates all required files according to defined reclass model [1]. In this case you need just to enable ssl and nothing more:
 
 .. code-block:: yaml
 
@@ -139,11 +157,6 @@ Also you can pass them via specifing a name of ca authority at salt master:
         ...
         ssl:
           enabled: True
-          authority: CA_Authority_Name
-
-In this case keys and certs will be pulled from:
-
-`salt://pki/{{ authority }}/certs/{ rabbitmq.{cert|key} | ca.cert }`
 
 --
 
@@ -156,6 +169,11 @@ Defaut port for TLS is **5671**:
       bind:
         ssl:
          port: 5671
+
+
+1. https://github.com/Mirantis/reclass-system-salt-model/tree/master/salt/minion/cert/rabbitmq
+
+
 
 Usage
 =====

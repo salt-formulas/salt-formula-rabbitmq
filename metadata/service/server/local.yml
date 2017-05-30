@@ -2,6 +2,7 @@ applications:
 - rabbitmq
 classes:
 - service.rabbitmq.support
+
 parameters:
   _param:
     rabbitmq_admin_user: admin

@@ -2,46 +2,47 @@
 
 {%- if server.ssl.enabled %}
 
+{%- if server.ssl.cacert_chain is defined %}
 rabbitmq_cacertificate:
   file.managed:
     - name: {{ server.ssl.ca_file }}
-    {%- if server.ssl.cacert_chain is defined %}
     - contents_pillar: rabbitmq:server:ssl:cacert_chain
-    {%- else %}
-    - source: salt://pki/{{ server.ssl.authority }}/certs/ca.cert
-    {%- endif %}
-    - user: root
-    - group: rabbitmq
-    - mode: 640
+    - mode: 0444
     - makedirs: true
+{%- else %}
+rabbitmq_cacertificate:
+  file.exists:
+  - name: {{ server.ssl.ca_file }}
+{%- endif %}
 
+{%- if server.ssl.cert is defined %}
 rabbitmq_certificate:
   file.managed:
     - name: {{ server.ssl.cert_file }}
-    {%- if server.ssl.cert is defined %}
     - contents_pillar: rabbitmq:server:ssl:cert
-    {%- else %}
-    - source: salt://pki/{{ server.ssl.authority }}/certs/rabbitmq.cert
-    {%- endif %}
-    - user: root
-    - group: rabbitmq
-    - mode: 640
+    - mode: 0444
     - makedirs: true
+{%- else %}
+rabbitmq_certificate:
+  file.exists:
+  - name: {{ server.ssl.cert_file }}
+{%- endif %}
 
+{%- if server.ssl.key is defined %}
 rabbitmq_server_key:
   file.managed:
     - name: {{ server.ssl.key_file }}
-    {%- if server.ssl.key is defined %}
     - contents_pillar: rabbitmq:server:ssl:key
-    {%- else %}
-    - source: salt://pki/{{ server.ssl.authority }}/certs/rabbitmq.key
-    {%- endif %}
     - user: root
     - group: rabbitmq
-    - mode: 640
+    - mode: 0440
     - makedirs: true
+{%- else %}
+rabbitmq_server_key:
+  file.exists:
+    - name: {{ server.ssl.key_file }}
+{%- endif %}
 
-# consist of private key and cert
 rabbitmq_ssl_all_file:
   file.managed:
     - name: {{ server.ssl.all_file }}
@@ -49,7 +50,7 @@ rabbitmq_ssl_all_file:
     - template: jinja
     - user: root
     - group: rabbitmq
-    - mode: 640
+    - mode: 0440
     - makedirs: true
     - context:
         ssl_key_file: {{ server.ssl.key_file }}
@@ -65,7 +66,7 @@ rabbitmq_ssl_env:
     - template: jinja
     - user: root
     - group: rabbitmq
-    - mode: 640
+    - mode: 0440
     - makedirs: true
     - context:
        all_file: {{ server.ssl.all_file }}

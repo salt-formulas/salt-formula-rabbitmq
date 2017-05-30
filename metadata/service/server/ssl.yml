@@ -1,0 +1,10 @@
+# defaults paths to certificates and keys of rabbitmq server
+
+parameters:
+  rabbitmq:
+    server:
+      ssl:
+        key_file: /etc/rabbitmq/ssl/key.pem
+        cert_file: /etc/rabbitmq/ssl/cert.pem
+        all_file: /etc/rabbitmq/ssl/all_file.pem
+        ca_file: /etc/rabbitmq/ssl/ca.pem
