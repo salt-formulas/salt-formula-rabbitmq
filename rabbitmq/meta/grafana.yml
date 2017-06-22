@@ -1,7 +1,12 @@
 dashboard:
-  rabbitmq:
+  rabbitmq_influxdb:
+    datasource: influxdb
     format: json
     template: rabbitmq/files/grafana_dashboards/rabbitmq_influxdb.json
+  rabbitmq_prometheus:
+    datasource: prometheus
+    format: json
+    template: rabbitmq/files/grafana_dashboards/rabbitmq_prometheus.json
   main:
     row:
       ost-middleware:
