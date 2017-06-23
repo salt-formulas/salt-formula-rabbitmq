@@ -33,6 +33,7 @@ rabbitmq_policy_{{ host_name }}_{{ policy.name }}:
   - name: {{ policy.name }}
   - pattern: {{ policy.pattern }}
   - definition: {{ policy.definition|json }}
+  - priority: {{ policy.get('priority', 0)|int }}
   - vhost: {{ host_name }}
   - require:
     - service: rabbitmq_service
