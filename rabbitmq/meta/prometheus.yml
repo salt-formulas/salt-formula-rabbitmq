@@ -1,0 +1,69 @@
+{%- from "rabbitmq/map.jinja" import server with context %}
+
+{%- if server.get('enabled', False) %}
+{%- raw %}
+server:
+  alert:
+    RabbitMQDown:
+      if: >-
+        rabbitmq_up != 1
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: 'RabbitMQ service down'
+        description: 'RabbitMQ service is down on node {{ $labels.host }}'
+    RabbitMQDiskLow:
+      if: >-
+        predict_linear(rabbitmq_node_disk_free[8h], 8*3600) <=  rabbitmq_node_disk_free_limit
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: 'RabbitMQ disk free space too low'
+        description: 'The RabbitMQ disk partition will be full in less than 8 hours on node {{ $labels.host }}.'
+    RabbitMQDiskFull:
+      if: >-
+        rabbitmq_node_disk_free <=  rabbitmq_node_disk_free_limit
+      labels:
+        severity: critical
+        service: rabbitmq
+      annotations:
+        summary: 'RabbitMQ producers blocked due to full disk'
+        description: 'All producers are blocked because the RabbitMQ disk partition is full on node {{ $labels.host }}.'
+    RabbitMQMemoryLow:
+{%- endraw %}
+      {%- set mem_threshold = prometheus_server.get('alert', {}).get('RabbitMQMemoryLow', {}).get('var', {}).get('threshold', 100 * 1024 * 1024  ) %}
+      if: >-
+        (rabbitmq_node_mem_limit - rabbitmq_node_mem_used) <= {{ mem_threshold }}
+{%- raw %}
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: 'RabbitMQ free memory too low'
+        description: 'The amount of free memory is too low on node {{ $labels.host }} (current value={{ $value }}B, threshold={%- endraw %}{{ mem_threshold }}B).'
+{%- raw %}
+    RabbitMQMemoryFull:
+      if: >-
+        rabbitmq_node_mem_used >= rabbitmq_node_mem_limit
+      labels:
+        severity: critical
+        service: rabbitmq
+      annotations:
+        summary: 'RabbitMQ producers blocked due to full memory'
+        description: 'All producers are blocked because the memory is full on node {{ $labels.host }}.'
+
+    RabbitMQTooManyMessages:
+{%- endraw %}
+      {%- set msg_threshold = prometheus_server.get('alert', {}).get('RabbitMQTooManyMessages', {}).get('var', {}).get('threshold', 1024 * 1024  ) %}
+      if: >-
+        rabbitmq_overview_messages  > {{ msg_threshold }}
+{%- raw %}
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: 'Too many messages in RabbitMQ'
+        description: 'The number of outstanding messages in RabbitMQ is too high on node {{ $labels.host }} (current value={{ $value }}, threshold={%- endraw %}{{ msg_threshold }}).'
+{%- endif %}
