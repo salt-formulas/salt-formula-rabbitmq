@@ -1,0 +1,17 @@
+{%- from "rabbitmq/map.jinja" import server with context %}
+{%- if server.get('enabled', False) %}
+agent:
+  input:
+    rabbitmq:
+      template: rabbitmq/files/telegraf.conf
+      url: "http://{{ server.management.bind.address }}:{{ server.management.bind.port }}"
+      username: {{ server.admin.name }}
+      password: >-
+        {{ server.admin.password }}
+      nodes: [ "rabbit@{{ grains.host }}" ]
+      tagexclude: [ "node", "url" ]
+    procstat:
+      process:
+        rabbitmq:
+          exe: beam.smp
+{%- endif %}
