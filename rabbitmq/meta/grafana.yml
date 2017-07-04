@@ -8,6 +8,7 @@ dashboard:
     format: json
     template: rabbitmq/files/grafana_dashboards/rabbitmq_prometheus.json
   main:
+    datasource: influxdb
     row:
       ost-middleware:
         title: Middleware
