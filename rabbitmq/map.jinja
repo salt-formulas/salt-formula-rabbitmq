@@ -49,3 +49,9 @@
 {%- for host_name, host in server.get('host', {}).iteritems() %}
 {%- do rabbitmq_users.update({host.user: [host]}) %}
 {%- endfor %}
+{%- set monitoring = salt['grains.filter_by']({
+  'default': {
+    'low_memory': 100 * 1024 * 1024,
+    'too_many_messages': 1024 * 1024,
+  },
+}, grain='os_family', merge=salt['pillar.get']('rabbitmq:monitoring')) %}

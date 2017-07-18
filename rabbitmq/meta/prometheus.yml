@@ -1,4 +1,4 @@
-{%- from "rabbitmq/map.jinja" import server with context %}
+{%- from "rabbitmq/map.jinja" import server, monitoring with context %}
 
 {%- if server.get('enabled', False) %}
 {%- raw %}
@@ -33,7 +33,7 @@ server:
         description: 'All producers are blocked because the RabbitMQ disk partition is full on node {{ $labels.host }}.'
     RabbitMQMemoryLow:
 {%- endraw %}
-      {%- set mem_threshold = prometheus_server.get('alert', {}).get('RabbitMQMemoryLow', {}).get('var', {}).get('threshold', 100 * 1024 * 1024  ) %}
+      {%- set mem_threshold = monitoring.low_memory %}
       if: >-
         (rabbitmq_node_mem_limit - rabbitmq_node_mem_used) <= {{ mem_threshold }}
 {%- raw %}
@@ -56,7 +56,7 @@ server:
 
     RabbitMQTooManyMessages:
 {%- endraw %}
-      {%- set msg_threshold = prometheus_server.get('alert', {}).get('RabbitMQTooManyMessages', {}).get('var', {}).get('threshold', 1024 * 1024  ) %}
+      {%- set msg_threshold = monitoring.too_many_messages %}
       if: >-
         rabbitmq_overview_messages  > {{ msg_threshold }}
 {%- raw %}
