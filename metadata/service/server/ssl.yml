@@ -4,6 +4,7 @@ parameters:
   rabbitmq:
     server:
       ssl:
+        enabled: True
         key_file: /etc/rabbitmq/ssl/key.pem
         cert_file: /etc/rabbitmq/ssl/cert.pem
         all_file: /etc/rabbitmq/ssl/all_file.pem
