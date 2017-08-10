@@ -40,4 +40,10 @@ suites:
     provisioner:
       pillars-from-files:
         rabbitmq.sls: tests/pillar/rabbitmq_server.sls
+
+  - name: rabbitmq_server_ssl
+    provisioner:
+      pillars-from-files:
+        rabbitmq.sls: tests/pillar/rabbitmq_server_ssl.sls
+
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

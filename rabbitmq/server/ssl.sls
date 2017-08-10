@@ -10,9 +10,16 @@ rabbitmq_cacertificate:
     - mode: 0444
     - makedirs: true
 {%- else %}
+rabbitmq_cacertificate_exists:
+ file.exists:
+   - name: {{ server.ssl.ca_file }}
 rabbitmq_cacertificate:
-  file.exists:
+  file.managed:
   - name: {{ server.ssl.ca_file }}
+  - mode: 644
+  - create: False
+  - require:
+    - file: rabbitmq_cacertificate_exists
 {%- endif %}
 
 {%- if server.ssl.cert is defined %}
@@ -23,9 +30,16 @@ rabbitmq_certificate:
     - mode: 0444
     - makedirs: true
 {%- else %}
-rabbitmq_certificate:
+rabbitmq_certificate_exists:
   file.exists:
   - name: {{ server.ssl.cert_file }}
+rabbitmq_certificate:
+  file.managed:
+  - name: {{ server.ssl.cert_file }}
+  - mode: 644
+  - create: False
+  - require:
+    - file: rabbitmq_certificate_exists
 {%- endif %}
 
 {%- if server.ssl.key is defined %}
@@ -38,9 +52,18 @@ rabbitmq_server_key:
     - mode: 0440
     - makedirs: true
 {%- else %}
-rabbitmq_server_key:
+rabbitmq_server_key_exists:
   file.exists:
     - name: {{ server.ssl.key_file }}
+rabbitmq_server_key:
+  file.managed:
+    - name: {{ server.ssl.key_file }}
+    - user: root
+    - group: rabbitmq
+    - mode: 0440
+    - create: False
+    - require:
+      - file: rabbitmq_server_key_exists
 {%- endif %}
 
 rabbitmq_ssl_all_file:
