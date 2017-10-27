@@ -13,7 +13,7 @@ provisioner:
   log_level: error
   formula: rabbitmq
   grains:
-    noservices: True
+    noservices: False
   state_top:
     base:
       "*":
@@ -41,9 +41,9 @@ suites:
       pillars-from-files:
         rabbitmq.sls: tests/pillar/rabbitmq_server.sls
 
-  - name: rabbitmq_server_ssl
+  - name: rabbitmq_ssl_server
     provisioner:
       pillars-from-files:
-        rabbitmq.sls: tests/pillar/rabbitmq_server_ssl.sls
+        rabbitmq.sls: tests/pillar/rabbitmq_ssl_server.sls
 
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

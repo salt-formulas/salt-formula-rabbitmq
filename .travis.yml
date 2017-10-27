@@ -19,6 +19,8 @@ install:
 env:
   - PLATFORM=trevorj/salty-whales:trusty SUITE=rabbitmq_server
   - PLATFORM=trevorj/salty-whales:xenial SUITE=rabbitmq_server
+#  - PLATFORM=trevorj/salty-whales:trusty SUITE=rabbitmq_ssl_server
+#  - PLATFORM=trevorj/salty-whales:xenial SUITE=rabbitmq_ssl_server
 
 before_script:
   - set -o pipefail
