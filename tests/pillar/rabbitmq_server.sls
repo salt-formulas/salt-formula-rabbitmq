@@ -8,6 +8,7 @@ rabbitmq:
     admin:
       name: adminuser
       password: pwd
+      service: rabbitmq-server
     host:
       '/':
         enabled: true
@@ -19,5 +20,6 @@ rabbitmq:
           definition: '{"ha-mode": "all"}'
     memory:
       vm_high_watermark: 0.4
-    plugins: ['']
-
+    plugins:
+    - amqp_client
+    - rabbitmq_management
