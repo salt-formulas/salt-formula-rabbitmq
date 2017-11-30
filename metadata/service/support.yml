@@ -19,3 +19,5 @@ parameters:
         enabled: true
       prometheus:
         enabled: true
+      fluentd:
+        enabled: true
