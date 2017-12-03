@@ -27,11 +27,11 @@ RabbitMQ as AMQP broker with admin user and vhosts
         plugins:
         - amqp_client
         - rabbitmq_management
-        virtual_hosts:
-        - enabled: true
-          host: '/monitor'
-          user: 'monitor'
-          password: 'password'
+        host:
+          '/monitor':
+            enabled: true
+            user: 'monitor'
+            password: 'password'
 
 RabbitMQ as a Stomp broker
 
@@ -44,11 +44,11 @@ RabbitMQ as a Stomp broker
         bind:
           address: 0.0.0.0
           port: 5672
-        virtual_hosts:
-        - enabled: true
-          host: '/monitor'
-          user: 'monitor'
-          password: 'password'
+        host:
+          '/monitor':
+            enabled: true
+            user: 'monitor'
+            password: 'password'
         plugins:
         - rabbitmq_stomp
 
@@ -87,16 +87,15 @@ HA Queues definition
       server:
         enabled: true
         ...
-        virtual_hosts:
-        - enabled: true
-          host: '/monitor'
-          user: 'monitor'
-          password: 'password'
-          policies:
-          - name: HA
-            pattern: '^(?!amq\.).*'
-            definition: '{"ha-mode": "all"}'
-
+        host:
+          '/monitor':
+            enabled: true
+            user: 'monitor'
+            password: 'password'
+            policies:
+            - name: HA
+              pattern: '^(?!amq\.).*'
+              definition: '{"ha-mode": "all"}'
 
 
 Enable TLS support
