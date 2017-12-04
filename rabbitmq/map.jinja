@@ -12,6 +12,7 @@
         'env_file': '/etc/rabbitmq/rabbitmq-env.conf',
         'cookie_file': '/var/lib/rabbitmq/.erlang.cookie',
         'ulimit': 8192,
+        'limits_file': '/etc/systemd/system/rabbitmq-server.service.d/limits.conf',
         'disk_free_limit': 50000000,
         'bind': {
             'address': '0.0.0.0',

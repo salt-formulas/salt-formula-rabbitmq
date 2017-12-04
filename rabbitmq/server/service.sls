@@ -32,6 +32,22 @@ rabbitmq_default_config:
 
 {%- endif %}
 
+{%- if grains.init == 'systemd' %}
+
+rabbitmq_limits_systemd:
+  file.managed:
+  - name: {{ server.limits_file }}
+  - source: salt://rabbitmq/files/limits.conf
+  - template: jinja
+  - user: root
+  - group: root
+  - makedirs: True
+  - mode: 0644
+  - require:
+    - pkg: rabbitmq_packages
+
+{%- endif %}
+
 {%- if server.secret_key is defined and not grains.get('noservices', False) %}
 
 {%- if salt['cmd.run']('cat '+server.cookie_file) != server.secret_key %}
@@ -96,6 +112,9 @@ rabbitmq_service:
   - name: {{ server.service }}
   - watch:
     - file: rabbitmq_config
+      {%- if grains.init == 'systemd' %}
+    - file: rabbitmq_limits_systemd
+      {%- endif %}
       {% if server.ssl.enabled %}
     - file: rabbitmq_cacertificate
     - file: rabbitmq_certificate
