@@ -1,0 +1,37 @@
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+agent:
+  config:
+    label:
+      rabbitmq:
+        input:
+          tail_rabbitmq:
+            type: tail
+            tag: rabbitmq
+            path: /var/log/rabbitmq/rabbit*.log
+            pos_file: {{ pillar.fluentd.agent.dir.positiondb }}/rabbitmq.pos
+            parser:
+              type: multiline
+              time_key: Timestamp
+              time_format: '%d-%b-%Y::%H:%M:%S'
+              keep_time_key: false
+              format_firstline: '/=[A-Z]+\sREPORT====/'
+              format: '/^=(?<orig_severity_label>[A-Z]+)\sREPORT====\s(?<Timestamp>.*)\s===\n(?<Payload>.*)/'
+        filter:
+          match_severity:
+            type: record_transformer
+            tag: rabbitmq
+            remove_keys: orig_severity_label
+            enable_ruby: true
+            record:
+              - name: programname
+                value: rabbitmq
+              - name: severity_label
+                value: ${ {'INFO'=>'INFO','NOTICE'=>'NOTICE','SUPERVISOR'=>'NOTICE','WARNING'=>'WARNING','ERROR'=>'ERROR','CRASH'=>'CRITICAL'}[record['orig_severity_label']] }
+              - name: Severity
+                value: ${ {'INFO'=>6,'NOTICE'=>5,'SUPERVISOR'=>5,'WARNING'=>4,'ERROR'=>3,'CRASH'=>2}[record['orig_severity_label']].to_i }
+        match:
+          push_to_default:
+            tag: rabbitmq
+            type: relabel
+            label: default_output
+{%- endif %}
