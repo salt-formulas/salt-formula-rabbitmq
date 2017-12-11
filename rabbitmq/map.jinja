@@ -44,8 +44,11 @@
     },
 }, merge=pillar.rabbitmq.get('server', {}), base='default') %}
 
-{% set cluster = pillar.rabbitmq.get('cluster', {}) %}
-
+{% set cluster = salt['grains.filter_by']({
+  'default': {
+    'partition_handling': 'autoheal',
+  },
+}, merge=salt['pillar.get']('rabbitmq:cluster'), base='default') %}
 {%- set rabbitmq_users = {} %}
 {%- for host_name, host in server.get('host', {}).iteritems() %}
 {%- do rabbitmq_users.update({host.user: [host]}) %}
