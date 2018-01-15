@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/tcpcloud/salt-formula-rabbitmq.git
 
 Package: salt-formula-rabbitmq
 Architecture: all
-Depends: ${misc:Depends}, salt-master, reclass
+Depends: ${misc:Depends}
 Description: RabbitMQ Salt formula
  Install and configure RabbitMQ server and client.
