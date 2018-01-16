@@ -1,9 +1,12 @@
 {%- from "rabbitmq/map.jinja" import server with context %}
 {%- if server.enabled %}
 
-rabbitmq_packages:
+rabbitmq_server:
   pkg.installed:
-  - names: {{ server.pkgs }}
+  - name: {{ server.pkg }}
+  {%- if server.version is defined %}
+  - version: {{ server.version }}
+  {%- endif %}
 
 rabbitmq_config:
   file.managed:
@@ -15,7 +18,7 @@ rabbitmq_config:
   - makedirs: True
   - mode: 440
   - require:
-    - pkg: rabbitmq_packages
+    - pkg: rabbitmq_server
 
 {%- if grains.os_family == 'Debian' %}
 
@@ -28,7 +31,7 @@ rabbitmq_default_config:
   - group: rabbitmq
   - mode: 440
   - require:
-    - pkg: rabbitmq_packages
+    - pkg: rabbitmq_server
 
 {%- endif %}
 
@@ -44,7 +47,7 @@ rabbitmq_limits_systemd:
   - makedirs: True
   - mode: 0644
   - require:
-    - pkg: rabbitmq_packages
+    - pkg: rabbitmq_server
 
 {%- endif %}
 
@@ -57,7 +60,7 @@ sleep_before_rabbitmq_stop:
   - name: sleep 30
   - user: root
   - require:
-    - pkg: rabbitmq_packages
+    - pkg: rabbitmq_server
     - file: rabbitmq_config
 {#    - cmd: enable_mgmt_plugin #}
 

@@ -30,16 +30,16 @@
         }
     },
     'Arch': {
-        'pkgs': ['rabbitmq'],
+        'pkg': 'rabbitmq',
         'service': 'rabbitmq'
     },
     'Debian': {
-        'pkgs': ['rabbitmq-server', 'gettext-base'],
+        'pkg': 'rabbitmq-server',
         'service': 'rabbitmq-server',
         'default_file': '/etc/default/rabbitmq-server'
     },
     'RedHat': {
-        'pkgs': ['rabbitmq-server'],
+        'pkg': 'rabbitmq-server',
         'service': 'rabbitmq-server'
     },
 }, merge=pillar.rabbitmq.get('server', {}), base='default') %}
