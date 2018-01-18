@@ -2,7 +2,6 @@
 {%- if cluster.enabled %}
 
 include:
-- linux.network.host
 - rabbitmq.server.service
 
 {% if cluster.get('role', 'None') == 'master' %}
