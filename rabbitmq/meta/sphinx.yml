@@ -47,5 +47,5 @@ doc:
         status:
           name: Status
           value: |
-            {{ salt['cmd.run']('rabbitmqctl cluster_status')|indent(12) }}
+            {{ salt['cmd.shell']('rabbitmqctl cluster_status')|indent(12) }}
     {%- endif %}

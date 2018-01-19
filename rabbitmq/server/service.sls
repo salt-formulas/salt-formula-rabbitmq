@@ -53,7 +53,7 @@ rabbitmq_limits_systemd:
 
 {%- if server.secret_key is defined and not grains.get('noservices', False) %}
 
-{%- if salt['cmd.run']('cat '+server.cookie_file) != server.secret_key %}
+{%- if salt['cmd.shell']('cat '+server.cookie_file) != server.secret_key %}
 
 sleep_before_rabbitmq_stop:
   cmd.run:

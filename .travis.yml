@@ -17,10 +17,15 @@ install:
   - bundle install
 
 env:
+  - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=rabbitmq-server
+  - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=rabbitmq-server
+#  - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=rabbitmq-ssl-server
+#  - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=rabbitmq-ssl-server
   - PLATFORM=trevorj/salty-whales:trusty SUITE=rabbitmq-server
   - PLATFORM=trevorj/salty-whales:xenial SUITE=rabbitmq-server
 #  - PLATFORM=trevorj/salty-whales:trusty SUITE=rabbitmq-ssl-server
 #  - PLATFORM=trevorj/salty-whales:xenial SUITE=rabbitmq-ssl-server
+## Test on both Salt version until there is new test policy accepted
 
 before_script:
   - set -o pipefail
