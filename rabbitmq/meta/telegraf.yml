@@ -9,6 +9,7 @@ agent:
       password: >-
         {{ server.admin.password }}
       nodes: [ "rabbit@{{ grains.host }}" ]
+      queue_name_exclude: [ "*" ]
       tagexclude: [ "node", "url" ]
       tagdrop:
         queue: [ "*_fanout_*", "reply_*" ]
