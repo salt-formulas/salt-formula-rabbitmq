@@ -4,15 +4,16 @@ agent:
   input:
     rabbitmq:
       template: rabbitmq/files/telegraf.conf
+      # Input plugin configuration
       url: "http://{{ server.management.bind.address }}:{{ server.management.bind.port }}"
       username: {{ server.admin.name }}
       password: >-
         {{ server.admin.password }}
       nodes: [ "rabbit@{{ grains.host }}" ]
       queue_name_exclude: [ "*" ]
+      # Measurement filtering
+      namepass: [ "rabbitmq", "rabbitmq_node", "rabbitmq_overview" ]
       tagexclude: [ "node", "url" ]
-      tagdrop:
-        queue: [ "*_fanout_*", "reply_*" ]
     procstat:
       process:
         rabbitmq:
