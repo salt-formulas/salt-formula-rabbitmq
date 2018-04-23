@@ -56,6 +56,8 @@
 {%- set monitoring = salt['grains.filter_by']({
   'default': {
     'low_memory': 100 * 1024 * 1024,
+    'low_memory_threshold': 0.8,
+    'disk_full_threshold': 10,
     'too_many_messages': 1024 * 1024,
   },
 }, grain='os_family', merge=salt['pillar.get']('rabbitmq:monitoring')) %}

@@ -1,69 +1,80 @@
 {%- from "rabbitmq/map.jinja" import server, monitoring with context %}
 
 {%- if server.get('enabled', False) %}
+{%- set disk_threshold = monitoring.disk_full_threshold %}
+{%- set mem_threshold = monitoring.low_memory_threshold %}
+{%- set msg_threshold = monitoring.too_many_messages %}
 {%- raw %}
 server:
   alert:
-    RabbitMQDown:
+    RabbitmqServiceDown:
       if: >-
-        rabbitmq_up != 1
+        rabbitmq_up == 0
       labels:
-        severity: warning
+        severity: minor
         service: rabbitmq
       annotations:
-        summary: 'RabbitMQ service down'
-        description: 'RabbitMQ service is down on node {{ $labels.host }}'
-    RabbitMQDiskLow:
+        summary: "RabbitMQ service is down"
+        description: "The RabbitMQ service on the {{ $labels.host }} node is down."
+    RabbitmqServiceOutage:
       if: >-
-        predict_linear(rabbitmq_node_disk_free[8h], 8*3600) <=  rabbitmq_node_disk_free_limit
-      labels:
-        severity: warning
-        service: rabbitmq
-      annotations:
-        summary: 'RabbitMQ disk free space too low'
-        description: 'The RabbitMQ disk partition will be full in less than 8 hours on node {{ $labels.host }}.'
-    RabbitMQDiskFull:
-      if: >-
-        rabbitmq_node_disk_free <=  rabbitmq_node_disk_free_limit
+        count(rabbitmq_up == 0) == count(rabbitmq_up)
       labels:
         severity: critical
         service: rabbitmq
       annotations:
-        summary: 'RabbitMQ producers blocked due to full disk'
-        description: 'All producers are blocked because the RabbitMQ disk partition is full on node {{ $labels.host }}.'
-    RabbitMQMemoryLow:
+        summary: "RabbitMQ service outage"
+        description: "All RabbitMQ services are down."
+    RabbitmqDiskFullWarning:
 {%- endraw %}
-      {%- set mem_threshold = monitoring.low_memory %}
       if: >-
-        (rabbitmq_node_mem_limit - rabbitmq_node_mem_used) <= {{ mem_threshold }}
+        rabbitmq_node_disk_free <= rabbitmq_node_disk_free_limit * {{ disk_threshold }}
 {%- raw %}
       labels:
         severity: warning
         service: rabbitmq
       annotations:
-        summary: 'RabbitMQ free memory too low'
-        description: 'The amount of free memory is too low on node {{ $labels.host }} (current value={{ $value }}B, threshold={%- endraw %}{{ mem_threshold }}B).'
+        summary: "{%- endraw %}{{ 100 - disk_threshold*100 }}{%- raw %}% of free disk space"
+        description: "The {{ $labels.host }} node has {{ $value }}B of free disk space."
+    RabbitmqDiskFullCritical:
+      if: >-
+        rabbitmq_node_disk_free <= rabbitmq_node_disk_free_limit
+      labels:
+        severity: critical
+        service: rabbitmq
+      annotations:
+        summary: "Disk space is full"
+        description: "The disk on the {{ $labels.host }} node is full."
+    RabbitmqMemoryLowWarning:
+{%- endraw %}
+      if: >-
+        rabbitmq_node_mem_used >= rabbitmq_node_mem_limit * {{ mem_threshold }}
 {%- raw %}
-    RabbitMQMemoryFull:
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: "RabbitMQ uses {%- endraw %} {{ mem_threshold*100 }}{%- raw %}% of memory"
+        description: "The RabbitMQ service on the {{ $labels.host }} node uses {{ $value }}B of memory."
+    RabbitmqMemoryLowCritical:
       if: >-
         rabbitmq_node_mem_used >= rabbitmq_node_mem_limit
       labels:
         severity: critical
         service: rabbitmq
       annotations:
-        summary: 'RabbitMQ producers blocked due to full memory'
-        description: 'All producers are blocked because the memory is full on node {{ $labels.host }}.'
-
-    RabbitMQTooManyMessages:
+        summary: "Out of memory"
+        description: "The RabbitMQ service on the {{ $labels.host }} node is out of memory."
+    RabbitmqMessagesTooHigh:
 {%- endraw %}
-      {%- set msg_threshold = monitoring.too_many_messages %}
       if: >-
-        rabbitmq_overview_messages  > {{ msg_threshold }}
+        rabbitmq_overview_messages > {{ msg_threshold }}
 {%- raw %}
       labels:
         severity: warning
         service: rabbitmq
       annotations:
-        summary: 'Too many messages in RabbitMQ'
-        description: 'The number of outstanding messages in RabbitMQ is too high on node {{ $labels.host }} (current value={{ $value }}, threshold={%- endraw %}{{ msg_threshold }}).'
+        summary: "RabbitMQ has reached the limit of {%- endraw %}{{ msg_threshold }}{%- raw %} messages"
+        description: "The RabbitMQ service on the {{ $labels.host }} node has received {{ $value }} messages."
+{%- endraw %}
 {%- endif %}
