@@ -9,6 +9,9 @@ include:
 rabbitmq_plugin_{{ plugin }}:
   rabbitmq_plugin.enabled:
   - name: {{ plugin }}
+  {%- if server.plugins_runas_user is defined %}
+  - runas: {{ server.plugins_runas_user }}
+  {%- endif %}
   - require:
     - service: rabbitmq_service
 

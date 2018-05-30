@@ -20,6 +20,7 @@ rabbitmq:
           definition: '{"ha-mode": "all"}'
     memory:
       vm_high_watermark: 0.4
+    plugins_runas_user: root
     plugins:
     - amqp_client
     - rabbitmq_management

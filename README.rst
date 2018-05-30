@@ -49,6 +49,7 @@ RabbitMQ as a Stomp broker
             enabled: true
             user: 'monitor'
             password: 'password'
+        plugins_runas_user: rabbitmq
         plugins:
         - rabbitmq_stomp
 
