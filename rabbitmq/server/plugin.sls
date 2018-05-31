@@ -9,7 +9,6 @@ include:
 rabbitmq_plugin_{{ plugin }}:
   rabbitmq_plugin.enabled:
   - name: {{ plugin }}
-  - runas: rabbitmq
   - require:
     - service: rabbitmq_service
 
