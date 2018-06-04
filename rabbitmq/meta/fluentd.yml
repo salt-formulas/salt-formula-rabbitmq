@@ -32,6 +32,35 @@ agent:
         match:
           push_to_default:
             tag: rabbitmq
+            type: copy
+            store:
+              - type: relabel
+                label: default_output
+              - type: rewrite_tag_filter
+                rule:
+                  - name: severity_label
+                    regexp: '.'
+                    result: metric.rabbitmq_log_messages
+          push_to_metric:
+            tag: metric.rabbitmq_log_messages
             type: relabel
-            label: default_output
+            label: default_metric
+      default_metric:
+        filter:
+          rabbitmq_logs_per_severity:
+            tag: metric.rabbitmq_log_messages
+            require:
+              - add_general_fields
+            type: prometheus
+            metric:
+              - name: log_messages
+                type: counter
+                desc: Total number of log lines by severity
+            label:
+              - name: service
+                value: rabbitmq
+              - name: level
+                value: ${severity_label}
+              - name: host
+                value: ${Hostname}
 {%- endif %}
