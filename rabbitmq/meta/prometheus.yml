@@ -83,5 +83,15 @@ server:
       annotations:
         summary: "RabbitMQ has reached the limit of {%- endraw %}{{ msg_threshold }}{%- raw %} messages"
         description: "The RabbitMQ service on the {{ $labels.host }} node has received {{ $value }} messages."
+    RabbitmqErrorLogsTooHigh:
+      if: >-
+        sum(rate(log_messages{service="rabbitmq",level=~"(?i:(error|emergency|fatal))"}[5m])) without (level) > 0.2
+      for: 1m
+      labels:
+        severity: warning
+        service: rabbitmq
+      annotations:
+        summary: "Too many errors in RabbitMQ logs"
+        description: "The rate of errors in RabbitMQ logs over the last 5 minutes is too high on node {{ $labels.host }}."
 {%- endraw %}
 {%- endif %}
