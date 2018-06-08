@@ -37,8 +37,8 @@ server:
         severity: warning
         service: rabbitmq
       annotations:
-        summary: "{%- endraw %}{{ 100 - disk_threshold*100 }}{%- raw %}% of free disk space"
-        description: "The {{ $labels.host }} node has {{ $value }}B of free disk space."
+        summary: "{%- endraw %}{{ 100 - disk_threshold*100 }}{%- raw %}% of free RabbitMQ disk space"
+        description: "The RabbitMQ service on the {{ $labels.host }} node has {{ $value }}B of free disk space."
     RabbitmqDiskFullCritical:
       if: >-
         rabbitmq_node_disk_free <= rabbitmq_node_disk_free_limit
@@ -47,8 +47,8 @@ server:
         severity: critical
         service: rabbitmq
       annotations:
-        summary: "Disk space is full"
-        description: "The disk on the {{ $labels.host }} node is full."
+        summary: "RabbitMQ disk space is full"
+        description: "The RabbitMQ disk space on the {{ $labels.host }} node is full."
     RabbitmqMemoryLowWarning:
 {%- endraw %}
       if: >-
@@ -69,14 +69,13 @@ server:
         severity: critical
         service: rabbitmq
       annotations:
-        summary: "Out of memory"
+        summary: "RabbitMQ is out of memory"
         description: "The RabbitMQ service on the {{ $labels.host }} node is out of memory."
     RabbitmqMessagesTooHigh:
 {%- endraw %}
       if: >-
         rabbitmq_overview_messages > {{ msg_threshold }}
 {%- raw %}
-      for: 1m
       labels:
         severity: warning
         service: rabbitmq
@@ -86,12 +85,11 @@ server:
     RabbitmqErrorLogsTooHigh:
       if: >-
         sum(rate(log_messages{service="rabbitmq",level=~"(?i:(error|emergency|fatal))"}[5m])) without (level) > 0.2
-      for: 1m
       labels:
         severity: warning
         service: rabbitmq
       annotations:
         summary: "Too many errors in RabbitMQ logs"
-        description: "The rate of errors in RabbitMQ logs over the last 5 minutes is too high on node {{ $labels.host }}."
+        description: "The rate of errors in RabbitMQ logs is too high on the {{ $labels.host }} node (as measured over the last 5 minutes)."
 {%- endraw %}
 {%- endif %}
