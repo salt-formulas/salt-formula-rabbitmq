@@ -17,6 +17,8 @@ RabbitMQ as AMQP broker with admin user and vhosts
     rabbitmq:
       server:
         enabled: true
+        memory:
+          vm_high_watermark: 0.4
         bind:
           address: 0.0.0.0
           port: 5672
