@@ -9,6 +9,8 @@ agent:
       username: {{ server.admin.name }}
       password: >-
         {{ server.admin.password }}
+      header_timeout: 3s
+      client_timeout: 4s
       nodes: [ "rabbit@{{ grains.host }}" ]
       queue_name_exclude: [ "*" ]
       # Measurement filtering
