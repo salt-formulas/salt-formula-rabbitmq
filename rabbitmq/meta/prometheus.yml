@@ -2,8 +2,8 @@
 
 {%- if server.get('enabled', False) %}
 {%- set disk_threshold = monitoring.disk_full_threshold %}
-{%- set mem_threshold = monitoring.low_memory_threshold %}
 {%- set msg_threshold = monitoring.too_many_messages %}
+{%- set mem_high_watermark = server.get('memory', {}).get('vm_high_watermark', 0.8) %}
 {%- raw %}
 server:
   alert:
@@ -49,18 +49,18 @@ server:
       annotations:
         summary: "RabbitMQ disk space is full"
         description: "The RabbitMQ disk space on the {{ $labels.host }} node is full."
-    RabbitmqMemoryLowWarning:
+    RabbitmqMemoryWaterMarkWarning:
 {%- endraw %}
       if: >-
-        rabbitmq_node_mem_used >= rabbitmq_node_mem_limit * {{ mem_threshold }}
+        100 * rabbitmq_node_mem_used / rabbitmq_node_mem_limit >= 100 * {{ mem_high_watermark }}
 {%- raw %}
-      for: 1m
+      for: 2m
       labels:
         severity: warning
         service: rabbitmq
       annotations:
-        summary: "RabbitMQ uses {%- endraw %} {{ mem_threshold*100 }}{%- raw %}% of memory"
-        description: "The RabbitMQ service on the {{ $labels.host }} node uses {{ $value }}B of memory."
+        summary: "RabbitMQ uses {%- endraw %} {{100*mem_high_watermark}}%{%- raw %} of memory"
+        description: "The RabbitMQ service uses {{ $value }}% of memory on the {{ $labels.host }} node for 2 minutes"
     RabbitmqMemoryLowCritical:
       if: >-
         rabbitmq_node_mem_used >= rabbitmq_node_mem_limit
