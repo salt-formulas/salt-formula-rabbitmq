@@ -66,6 +66,12 @@ RabbitMQ as base cluster node:
     rabbitmq:
       server:
         enabled: true
+        master: openstack1
+        {% if grains['host'] == 'openstack1' %}
+        role: master
+        {% else %}
+        role: slave
+        {% endif %}
         bind:
           address: 0.0.0.0
           port: 5672
