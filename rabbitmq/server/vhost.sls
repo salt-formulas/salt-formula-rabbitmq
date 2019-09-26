@@ -1,7 +1,7 @@
 {%- from "rabbitmq/map.jinja" import server with context %}
 {%- if server.enabled %}
 
-{%- for host_name, host in server.get('host', {}).iteritems() %}
+{%- for host_name, host in server.get('host', {}).items() %}
 
 {%- if host.enabled %}
 

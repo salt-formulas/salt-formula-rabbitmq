@@ -13,7 +13,7 @@ rabbit_user_admin_present:
   - force: True
   - tags: administrator
   - perms:
-    {%- for vhost_name, vhost in server.get('host', {}).iteritems() %}
+    {%- for vhost_name, vhost in server.get('host', {}).items() %}
     - '{{ vhost_name }}':
       - '.*'
       - '.*'
