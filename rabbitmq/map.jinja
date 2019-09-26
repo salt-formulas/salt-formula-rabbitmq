@@ -50,7 +50,7 @@
   },
 }, merge=salt['pillar.get']('rabbitmq:cluster'), base='default') %}
 {%- set rabbitmq_users = {} %}
-{%- for host_name, host in server.get('host', {}).iteritems() %}
+{%- for host_name, host in server.get('host', {}).items() %}
 {%- do rabbitmq_users.update({host.user: [host]}) %}
 {%- endfor %}
 {%- set monitoring = salt['grains.filter_by']({
